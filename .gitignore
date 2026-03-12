@@ -1,0 +1,63 @@
+# =============================================
+# .gitignore para projeto C# / .NET / Blazor
+# =============================================
+
+# Segredos e configurações sensíveis ⚠️
+appsettings.Development.json
+appsettings.Production.json
+*.pfx
+*.p12
+secrets.json
+
+# User Secrets do .NET (já protegido pelo caminho fora do projeto)
+# mas por segurança listamos aqui
+**/Properties/launchSettings.json
+
+# Build e compilação
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Entity Framework Migrations (opcional - alguns preferem versionar)
+# Descomente se NÃO quiser versionar as migrations:
+# **/Migrations/
+
+# Publicação
+**/publish/
+**/PublishProfiles/
+
+# Node (se usar npm/webpack)
+node_modules/
+npm-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
