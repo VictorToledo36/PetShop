@@ -6,8 +6,6 @@ public class ApplicationUser : IdentityUser
     public string NomeCompleto { get; set; } = string.Empty;
     public string? CPF { get; set; }
     public DateTime DataCadastro { get; set; } = DateTime.UtcNow;
-
-    // Navegação
     public Endereco? Endereco { get; set; }
     public ICollection<Pet> Pets { get; set; } = new List<Pet>();
     public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
