@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using PetShot.Web.Data;
+using PetShop.Infrastructure.Persistence;
 
 namespace PetShot.Web.Components.Account;
 

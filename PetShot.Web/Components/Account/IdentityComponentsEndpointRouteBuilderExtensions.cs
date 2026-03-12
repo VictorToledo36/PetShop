@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using PetShop.Infrastructure.Persistence;
 using PetShot.Web.Components.Account.Pages;
 using PetShot.Web.Components.Account.Pages.Manage;
-using PetShot.Web.Data;
 
 namespace Microsoft.AspNetCore.Routing;
 

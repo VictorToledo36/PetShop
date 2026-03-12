@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace PetShot.Web.Data;
+namespace PetShop.Infrastructure.Persistence;
 
 // Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser

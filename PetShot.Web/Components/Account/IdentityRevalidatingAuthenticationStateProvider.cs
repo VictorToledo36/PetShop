@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using PetShot.Web.Data;
+using PetShop.Infrastructure.Persistence;
 
 namespace PetShot.Web.Components.Account;
 

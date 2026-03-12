@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PetShot.Web.Components;
 using PetShot.Web.Components.Account;
-using PetShot.Web.Data;
+using PetShop.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
