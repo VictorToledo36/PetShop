@@ -1,0 +1,123 @@
+﻿@page "/servicos"
+@rendermode InteractiveServer
+@inject IServicoService ServicoService
+@using PetShop.Application.Interfaces
+@using PetShop.Domain.Entities
+@using PetShop.Domain.Enums
+
+<PageTitle>Serviços - Cantinho da Roça</PageTitle>
+
+<section style="background: linear-gradient(135deg, #6a0dad, #9b30ff); padding-top: 70px;"
+         class="text-white text-center py-5">
+    <div class="container py-4">
+        <h1 class="display-5 fw-bold mb-2">✂️ Nossos Serviços</h1>
+        <p class="lead opacity-75">Cuidado completo para o seu pet com preços por porte</p>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        @if (carregando)
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border" style="color: #6a0dad;" role="status"></div>
+                <p class="mt-3 text-muted">Carregando serviços...</p>
+            </div>
+        }
+        else if (!servicos.Any())
+        {
+            <div class="text-center py-5">
+                <div class="fs-1">🐾</div>
+                <h4 class="text-muted">Nenhum serviço cadastrado ainda.</h4>
+                <p class="text-muted">Em breve nossos serviços estarão disponíveis!</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var servico in servicos)
+            {
+                <div class="card border-0 shadow mb-4" style="border-radius: 16px; overflow: hidden;">
+                    <div class="card-header text-white py-3 px-4" style="background-color: #6a0dad;">
+                        <h4 class="mb-0 fw-bold">@GetIconeServico(servico.Nome) @servico.Nome</h4>
+                        @if (!string.IsNullOrEmpty(servico.Descricao))
+                        {
+                            <p class="mb-0 opacity-75 small mt-1">@servico.Descricao</p>
+                        }
+                    </div>
+                    <div class="card-body p-4">
+                        @if (servico.Precos.Any())
+                        {
+                            <h6 class="text-muted mb-3 fw-bold">💰 Preços por porte:</h6>
+                            <div class="row g-3">
+                                @foreach (var preco in servico.Precos.OrderBy(p => p.Porte))
+                                {
+                                    <div class="col-6 col-md-3">
+                                        <div class="text-center p-3 rounded"
+                                             style="background-color: #f8f0ff; border: 2px solid #e0c3fc;">
+                                            <div class="fw-bold mb-1" style="color: #6a0dad;">
+                                                @GetIconePorte(preco.Porte) @preco.Porte.ToString()
+                                            </div>
+                                            <div class="fs-5 fw-bold text-dark">
+                                                R$ @preco.Preco.ToString("F2")
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted small">Preços sob consulta.</p>
+                        }
+                        <div class="mt-4">
+                            <a href="/agendamento" class="btn fw-bold text-white px-4"
+                               style="background-color: #6a0dad; border-radius: 8px;">
+                                <i class="bi bi-calendar-check me-2"></i>Agendar este serviço
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>
+
+<section class="py-5 text-white text-center"
+         style="background: linear-gradient(135deg, #6a0dad, #9b30ff);">
+    <div class="container">
+        <h3 class="fw-bold mb-3">Pronto para agendar? 🐾</h3>
+        <p class="lead mb-4 opacity-75">Escolha o melhor dia para seu pet!</p>
+        <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-5">
+            <i class="bi bi-calendar-check me-2"></i>Agendar Agora
+        </a>
+    </div>
+</section>
+
+@code {
+    private List<Servico> servicos = new();
+    private bool carregando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        servicos = await ServicoService.ObterTodosAsync();
+        carregando = false;
+    }
+
+    private string GetIconeServico(string nome) => nome.ToLower() switch
+    {
+        var n when n.Contains("banho") && n.Contains("tosa") => "🛁✂️",
+        var n when n.Contains("banho") => "🛁",
+        var n when n.Contains("tosa higiênica") || n.Contains("higienica") => "🧴",
+        var n when n.Contains("tosa") => "✂️",
+        _ => "🐾"
+    };
+
+    private string GetIconePorte(PortePet porte) => porte switch
+    {
+        PortePet.Pequeno => "🐩",
+        PortePet.Medio => "🐕",
+        PortePet.Grande => "🦮",
+        PortePet.GrandePorte => "🐘",
+        _ => "🐾"
+    };
+}

@@ -1,7 +1,116 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Cantinho da Roça - Pet Shop Banho & Tosa</PageTitle>
 
-<h1>Hello, world!</h1>
+<!-- HERO -->
+<section style="background: linear-gradient(135deg, #6a0dad, #9b30ff);
+                min-height: 100vh;
+                padding-top: 70px;"
+         class="d-flex align-items-center text-white">
+    <div class="container text-center py-5">
+        <h1 class="display-3 fw-bold mb-3">🐾 Cantinho da Roça</h1>
+        <p class="lead fs-4 mb-2">Cuidando do seu pet com amor e carinho</p>
+        <p class="fs-5 opacity-75 mb-4">Banho • Tosa • Tosa Higiênica</p>
+        <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-5 py-3 me-3">
+            <i class="bi bi-calendar-check me-2"></i>Agendar Agora
+        </a>
+        <a href="/servicos" class="btn btn-outline-light btn-lg px-5 py-3">
+            Ver Serviços
+        </a>
+    </div>
+</section>
 
-Welcome to your new app.
+<!-- SERVIÇOS -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-2" style="color: #6a0dad;">Nossos Serviços</h2>
+        <p class="text-center text-muted mb-5">Tudo que seu pet precisa em um só lugar</p>
+        <div class="row g-4 justify-content-center">
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow h-100 text-center p-4">
+                    <div class="fs-1 mb-3">🛁</div>
+                    <h4 class="fw-bold" style="color: #6a0dad;">Banho</h4>
+                    <p class="text-muted">Banho completo com produtos de qualidade, secagem e perfume. Deixamos seu pet cheiroso e feliz!</p>
+                    <a href="/agendamento" class="btn btn-purple mt-auto"
+                       style="background-color: #6a0dad; color: white;">Agendar</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow h-100 text-center p-4">
+                    <div class="fs-1 mb-3">✂️</div>
+                    <h4 class="fw-bold" style="color: #6a0dad;">Tosa</h4>
+                    <p class="text-muted">Tosa completa com acabamento profissional. Deixamos seu pet estiloso e confortável!</p>
+                    <a href="/agendamento" class="btn mt-auto"
+                       style="background-color: #6a0dad; color: white;">Agendar</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow h-100 text-center p-4">
+                    <div class="fs-1 mb-3">🧴</div>
+                    <h4 class="fw-bold" style="color: #6a0dad;">Tosa Higiênica</h4>
+                    <p class="text-muted">Higienização das regiões sensíveis do pet, garantindo saúde e conforto no dia a dia.</p>
+                    <a href="/agendamento" class="btn mt-auto"
+                       style="background-color: #6a0dad; color: white;">Agendar</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- POR QUE NOS ESCOLHER -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5" style="color: #6a0dad;">Por que nos escolher?</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="fs-2 mb-2">❤️</div>
+                <h5 class="fw-bold">Amor pelos Animais</h5>
+                <p class="text-muted small">Tratamos cada pet como se fosse nosso</p>
+            </div>
+            <div class="col-md-3">
+                <div class="fs-2 mb-2">⭐</div>
+                <h5 class="fw-bold">Profissionais Experientes</h5>
+                <p class="text-muted small">Anos de experiência no cuidado animal</p>
+            </div>
+            <div class="col-md-3">
+                <div class="fs-2 mb-2">🛡️</div>
+                <h5 class="fw-bold">Ambiente Seguro</h5>
+                <p class="text-muted small">Espaço limpo, seguro e aconchegante</p>
+            </div>
+            <div class="col-md-3">
+                <div class="fs-2 mb-2">📅</div>
+                <h5 class="fw-bold">Agendamento Fácil</h5>
+                <p class="text-muted small">Agende online em poucos cliques</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GALERIA PRÉVIA -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-2" style="color: #6a0dad;">Nossos Clientes Felizes 🐶🐱</h2>
+        <p class="text-muted mb-4">Veja alguns dos pets que já passaram por aqui</p>
+        <a href="/galeria" class="btn btn-lg fw-bold"
+           style="background-color: #6a0dad; color: white;">
+            <i class="bi bi-images me-2"></i>Ver Galeria Completa
+        </a>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="py-5 text-white text-center"
+         style="background: linear-gradient(135deg, #6a0dad, #9b30ff);">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Pronto para agendar? 🐾</h2>
+        <p class="lead mb-4">Seu pet merece o melhor cuidado. Agende agora mesmo!</p>
+        <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-5">
+            <i class="bi bi-calendar-check me-2"></i>Agendar Agora
+        </a>
+    </div>
+</section>
