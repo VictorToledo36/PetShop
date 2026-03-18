@@ -51,6 +51,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddScoped<IPetService, PetService>();
+builder.Services.AddScoped<IServicoService, ServicoService>();
 
 // Services da Application (vamos criar logo abaixo)
 builder.Services.AddScoped<IAgendamentoService, AgendamentoService>();
