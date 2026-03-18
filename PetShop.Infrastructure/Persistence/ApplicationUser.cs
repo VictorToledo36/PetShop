@@ -9,4 +9,5 @@ public class ApplicationUser : IdentityUser
     public Endereco? Endereco { get; set; }
     public ICollection<Pet> Pets { get; set; } = new List<Pet>();
     public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
+    public bool Ativo { get; set; } = true;
 }
