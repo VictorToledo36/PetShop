@@ -4,101 +4,218 @@
 <PageTitle>Cantinho da Roça - Pet Shop Banho & Tosa</PageTitle>
 
 <!-- HERO -->
-<section style="background: linear-gradient(135deg, #6a0dad, #9b30ff);
-                min-height: 100vh;
-                padding-top: 70px;"
-         class="d-flex align-items-center text-white">
-    <div class="container text-center py-5">
-        <h1 class="display-3 fw-bold mb-3">🐾 Cantinho da Roça</h1>
-        <p class="lead fs-4 mb-2">Cuidando do seu pet com amor e carinho</p>
-        <p class="fs-5 opacity-75 mb-4">Banho • Tosa • Tosa Higiênica</p>
-        <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-5 py-3 me-3">
-            <i class="bi bi-calendar-check me-2"></i>Agendar Agora
-        </a>
-        <a href="/servicos" class="btn btn-outline-light btn-lg px-5 py-3">
-            Ver Serviços
-        </a>
+<section style="background: linear-gradient(135deg, #6a0dad, #9b30ff); padding-top: 70px; position: relative;"
+         class="text-white py-5">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span style="display:inline-block; background:rgba(255,255,255,0.15); color:#fff;
+                             font-size:12px; padding:4px 14px; border-radius:20px; margin-bottom:20px;
+                             border:1px solid rgba(255,255,255,0.25); letter-spacing:.5px;">
+                    Pet Shop • Banho & Tosa
+                </span>
+                <h1 class="display-4 fw-bold mb-3" style="line-height:1.2;">
+                    Cuidando do seu pet com amor e carinho
+                </h1>
+                <p class="fs-5 mb-4" style="color:rgba(255,255,255,0.82); line-height:1.7;">
+                    Banho completo, tosa profissional e muito cuidado para o seu melhor amigo se sentir feliz e saudável.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-4">
+                        <i class="bi bi-calendar-check me-2"></i>Agendar Agora
+                    </a>
+                    <a href="/servicos" class="btn btn-outline-light btn-lg px-4">
+                        Ver Serviços
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- Substitua pelo <img> com sua foto real -->
+                <div style="background:rgba(255,255,255,0.12); border-radius:20px; height:320px;
+                            display:flex; align-items:center; justify-content:center;
+                            border:1px solid rgba(255,255,255,0.2); font-size:80px;">
+                    🐾
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="position:absolute; bottom:-1px; left:0; right:0; height:48px;
+                background:#fff; clip-path: ellipse(55% 100% at 50% 100%);"></div>
+</section>
+
+<!-- SEÇÃO BANHO -->
+<section class="py-5">
+    <div class="container py-3">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <!-- Substitua pelo <img> com foto do banho -->
+                <div style="background:#f3e8ff; border-radius:20px; height:360px;
+                            display:flex; align-items:center; justify-content:center;
+                            border:1px solid #e9d5ff; font-size:80px;">
+                    🛁
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <span style="display:inline-block; background:#f3e8ff; color:#7c3aed;
+                             font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px;
+                             letter-spacing:.5px; margin-bottom:16px; text-transform:uppercase;">
+                    Banho Completo
+                </span>
+                <h2 class="fw-bold mb-3" style="font-size:1.9rem; color:#1a1a2e; line-height:1.25;">
+                    Seu pet limpo, cheiroso e feliz
+                </h2>
+                <p class="text-muted mb-4" style="line-height:1.75;">
+                    Utilizamos produtos de alta qualidade, específicos para cães e gatos.
+                    Cada banho inclui secagem completa, perfume e muito carinho durante todo o processo.
+                </p>
+                <ul class="list-unstyled mb-4">
+                    @foreach (var item in new[] { "Shampoo hipoalergênico", "Secagem profissional", "Perfume especial para pets", "Ambiente tranquilo e seguro" })
+                    {
+                        <li class="d-flex align-items-center gap-2 py-1" style="color:#444; font-size:15px;">
+                            <div style="width:22px; height:22px; background:#7c3aed; border-radius:50%;
+                                        display:flex; align-items:center; justify-content:center;
+                                        color:#fff; font-size:11px; font-weight:700; flex-shrink:0;">
+                                ✓
+                            </div>
+                            @item
+                        </li>
+                    }
+                </ul>
+                <a href="/agendamento" class="btn fw-bold text-white px-4 py-2"
+                   style="background:#7c3aed; border-radius:10px;">
+                    <i class="bi bi-calendar-check me-2"></i>Agendar Banho
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 
-<!-- SERVIÇOS -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-2" style="color: #6a0dad;">Nossos Serviços</h2>
-        <p class="text-center text-muted mb-5">Tudo que seu pet precisa em um só lugar</p>
-        <div class="row g-4 justify-content-center">
+<hr style="border-color:#f0ebff; margin:0 40px;" />
 
-            <div class="col-md-4">
-                <div class="card border-0 shadow h-100 text-center p-4">
-                    <div class="fs-1 mb-3">🛁</div>
-                    <h4 class="fw-bold" style="color: #6a0dad;">Banho</h4>
-                    <p class="text-muted">Banho completo com produtos de qualidade, secagem e perfume. Deixamos seu pet cheiroso e feliz!</p>
-                    <a href="/agendamento" class="btn btn-purple mt-auto"
-                       style="background-color: #6a0dad; color: white;">Agendar</a>
+<!-- SEÇÃO TOSA -->
+<section class="py-5">
+    <div class="container py-3">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 order-lg-2">
+                <!-- Substitua pelo <img> com foto da tosa -->
+                <div style="background:#faf5ff; border-radius:20px; height:360px;
+                            display:flex; align-items:center; justify-content:center;
+                            border:1px solid #ede9fe; font-size:80px;">
+                    ✂️
                 </div>
             </div>
+            <div class="col-lg-6 order-lg-1">
+                <span style="display:inline-block; background:#f3e8ff; color:#7c3aed;
+                             font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px;
+                             letter-spacing:.5px; margin-bottom:16px; text-transform:uppercase;">
+                    Tosa & Higiene
+                </span>
+                <h2 class="fw-bold mb-3" style="font-size:1.9rem; color:#1a1a2e; line-height:1.25;">
+                    Tosa profissional para todas as raças
+                </h2>
+                <p class="text-muted mb-4" style="line-height:1.75;">
+                    Nossa equipe é especializada em diferentes tipos de tosa — na máquina, na tesoura ou higiênica.
+                    Deixamos seu pet estiloso, confortável e saudável.
+                </p>
+                <ul class="list-unstyled mb-4">
+                    @foreach (var item in new[] { "Tosa completa e higiênica", "Profissionais experientes", "Acabamento cuidadoso", "Para cães e gatos" })
+                    {
+                        <li class="d-flex align-items-center gap-2 py-1" style="color:#444; font-size:15px;">
+                            <div style="width:22px; height:22px; background:#7c3aed; border-radius:50%;
+                                        display:flex; align-items:center; justify-content:center;
+                                        color:#fff; font-size:11px; font-weight:700; flex-shrink:0;">
+                                ✓
+                            </div>
+                            @item
+                        </li>
+                    }
+                </ul>
+                <a href="/agendamento" class="btn fw-bold text-white px-4 py-2"
+                   style="background:#7c3aed; border-radius:10px;">
+                    <i class="bi bi-calendar-check me-2"></i>Agendar Tosa
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- COMO FUNCIONA -->
+<section style="background:#faf7ff;" class="py-5">
+    <div class="container py-3 text-center">
+        <h2 class="fw-bold mb-2" style="color:#1a1a2e;">Como funciona o agendamento?</h2>
+        <p class="text-muted mb-5">Simples, rápido e 100% online</p>
+        <div class="row g-4">
             <div class="col-md-4">
-                <div class="card border-0 shadow h-100 text-center p-4">
-                    <div class="fs-1 mb-3">✂️</div>
-                    <h4 class="fw-bold" style="color: #6a0dad;">Tosa</h4>
-                    <p class="text-muted">Tosa completa com acabamento profissional. Deixamos seu pet estiloso e confortável!</p>
-                    <a href="/agendamento" class="btn mt-auto"
-                       style="background-color: #6a0dad; color: white;">Agendar</a>
+                <div style="background:#fff; border-radius:16px; padding:28px;
+                            border:1px solid #ede9fe; text-align:left; height:100%;">
+                    <div style="width:36px; height:36px; background:#7c3aed; color:#fff;
+                                border-radius:10px; display:flex; align-items:center;
+                                justify-content:center; font-weight:800; font-size:14px; margin-bottom:16px;">
+                        1
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color:#1a1a2e;">Escolha o serviço</h5>
+                    <p class="text-muted small" style="line-height:1.6;">
+                        Selecione banho, tosa ou tosa higiênica. Você pode combinar serviços!
+                    </p>
                 </div>
             </div>
-
             <div class="col-md-4">
-                <div class="card border-0 shadow h-100 text-center p-4">
-                    <div class="fs-1 mb-3">🧴</div>
-                    <h4 class="fw-bold" style="color: #6a0dad;">Tosa Higiênica</h4>
-                    <p class="text-muted">Higienização das regiões sensíveis do pet, garantindo saúde e conforto no dia a dia.</p>
-                    <a href="/agendamento" class="btn mt-auto"
-                       style="background-color: #6a0dad; color: white;">Agendar</a>
+                <div style="background:#fff; border-radius:16px; padding:28px;
+                            border:1px solid #ede9fe; text-align:left; height:100%;">
+                    <div style="width:36px; height:36px; background:#7c3aed; color:#fff;
+                                border-radius:10px; display:flex; align-items:center;
+                                justify-content:center; font-weight:800; font-size:14px; margin-bottom:16px;">
+                        2
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color:#1a1a2e;">Escolha data e horário</h5>
+                    <p class="text-muted small" style="line-height:1.6;">
+                        Veja os horários disponíveis e escolha o que for melhor para você.
+                    </p>
                 </div>
             </div>
-
+            <div class="col-md-4">
+                <div style="background:#fff; border-radius:16px; padding:28px;
+                            border:1px solid #ede9fe; text-align:left; height:100%;">
+                    <div style="width:36px; height:36px; background:#7c3aed; color:#fff;
+                                border-radius:10px; display:flex; align-items:center;
+                                justify-content:center; font-weight:800; font-size:14px; margin-bottom:16px;">
+                        3
+                    </div>
+                    <h5 class="fw-bold mb-2" style="color:#1a1a2e;">É hora do banho!</h5>
+                    <p class="text-muted small" style="line-height:1.6;">
+                        Traga seu pet no horário agendado. Cuidamos de tudo com muito amor.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
 <!-- POR QUE NOS ESCOLHER -->
 <section class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-5" style="color: #6a0dad;">Por que nos escolher?</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-3">
-                <div class="fs-2 mb-2">❤️</div>
-                <h5 class="fw-bold">Amor pelos Animais</h5>
-                <p class="text-muted small">Tratamos cada pet como se fosse nosso</p>
-            </div>
-            <div class="col-md-3">
-                <div class="fs-2 mb-2">⭐</div>
-                <h5 class="fw-bold">Profissionais Experientes</h5>
-                <p class="text-muted small">Anos de experiência no cuidado animal</p>
-            </div>
-            <div class="col-md-3">
-                <div class="fs-2 mb-2">🛡️</div>
-                <h5 class="fw-bold">Ambiente Seguro</h5>
-                <p class="text-muted small">Espaço limpo, seguro e aconchegante</p>
-            </div>
-            <div class="col-md-3">
-                <div class="fs-2 mb-2">📅</div>
-                <h5 class="fw-bold">Agendamento Fácil</h5>
-                <p class="text-muted small">Agende online em poucos cliques</p>
-            </div>
+    <div class="container py-3 text-center">
+        <h2 class="fw-bold mb-2" style="color:#1a1a2e;">Por que escolher o Cantinho da Roça?</h2>
+        <p class="text-muted mb-5">Seu pet merece o melhor cuidado</p>
+        <div class="row g-4">
+            @foreach (var item in new[] {
+            ("❤️", "Amor pelos Animais", "Tratamos cada pet como se fosse nosso"),
+            ("⭐", "Profissionais Experientes", "Anos de experiência no cuidado animal"),
+            ("🛡️", "Ambiente Seguro", "Espaço limpo, seguro e aconchegante"),
+            ("📅", "Agendamento Fácil", "Agende online em poucos cliques")
+            })
+            {
+                <div class="col-md-3 col-6">
+                    <div style="padding:28px 20px; border-radius:16px; border:1px solid #ede9fe; height:100%;">
+                        <div style="width:52px; height:52px; background:#f3e8ff; border-radius:14px;
+                                    display:flex; align-items:center; justify-content:center;
+                                    font-size:22px; margin:0 auto 16px;">
+                            @item.Item1
+                        </div>
+                        <h6 class="fw-bold mb-2" style="color:#1a1a2e;">@item.Item2</h6>
+                        <p class="text-muted small mb-0">@item.Item3</p>
+                    </div>
+                </div>
+            }
         </div>
-    </div>
-</section>
-
-<!-- GALERIA PRÉVIA -->
-<section class="py-5 bg-light pb-4">
-    <div class="container text-center">
-        <h2 class="fw-bold mb-2" style="color: #6a0dad;">Nossos Clientes Felizes 🐶</h2>
-        <p class="text-muted mb-4">Veja alguns dos pets que já passaram por aqui</p>
-        <a href="/galeria" class="btn btn-lg fw-bold"
-           style="background-color: #6a0dad; color: white;">
-            <i class="bi bi-images me-2"></i>Ver Galeria Completa
-        </a>
     </div>
 </section>
