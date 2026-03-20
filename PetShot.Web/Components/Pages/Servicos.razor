@@ -7,20 +7,30 @@
 
 <PageTitle>Serviços - Cantinho da Roça</PageTitle>
 
-<section style="background: linear-gradient(135deg, #6a0dad, #9b30ff); padding-top: 70px;"
+<!-- HERO -->
+<section style="background: linear-gradient(135deg, #7c3aed, #a855f7); padding-top: 70px; position: relative;"
          class="text-white text-center py-5">
-    <div class="container py-4">
+    <div class="container py-3">
+        <span style="display:inline-block; background:rgba(255,255,255,0.15);
+                     border:1px solid rgba(255,255,255,0.25); border-radius:20px;
+                     padding:4px 14px; font-size:12px; margin-bottom:12px; letter-spacing:0.5px;">
+            Pet Shop • Banho & Tosa
+        </span>
         <h1 class="display-5 fw-bold mb-2">✂️ Nossos Serviços</h1>
-        <p class="lead opacity-75">Cuidado completo para o seu pet com preços por porte</p>
+        <p class="opacity-75">Cuidado completo para o seu pet, com preços por porte</p>
     </div>
+    <div style="position:absolute; bottom:-1px; left:0; right:0; height:40px;
+                background:#f7f4ff; clip-path: ellipse(55% 100% at 50% 100%);"></div>
 </section>
 
-<section class="py-5 bg-light">
-    <div class="container">
+<!-- LISTA DE SERVIÇOS -->
+<section style="background:#f7f4ff; padding: 40px 0 60px;">
+    <div class="container" style="max-width:820px;">
+
         @if (carregando)
         {
             <div class="text-center py-5">
-                <div class="spinner-border" style="color: #6a0dad;" role="status"></div>
+                <div class="spinner-border" style="color: #7c3aed;" role="status"></div>
                 <p class="mt-3 text-muted">Carregando serviços...</p>
             </div>
         }
@@ -36,29 +46,51 @@
         {
             @foreach (var servico in servicos)
             {
-                <div class="card border-0 shadow mb-4" style="border-radius: 16px; overflow: hidden;">
-                    <div class="card-header text-white py-3 px-4" style="background-color: #6a0dad;">
-                        <h4 class="mb-0 fw-bold">@GetIconeServico(servico.Nome) @servico.Nome</h4>
-                        @if (!string.IsNullOrEmpty(servico.Descricao))
-                        {
-                            <p class="mb-0 opacity-75 small mt-1">@servico.Descricao</p>
-                        }
+                <div style="background:white; border-radius:16px; margin-bottom:20px;
+                            overflow:hidden; box-shadow:0 2px 12px rgba(124,58,237,0.08);
+                            border:1px solid #ede9fe;">
+
+                    <!-- Header do card -->
+                    <div style="display:flex; align-items:center; gap:14px;
+                                padding:18px 24px; border-bottom:1px solid #f3f0ff;">
+                        <div style="width:44px; height:44px; background:#f3f0ff; border-radius:12px;
+                                    display:flex; align-items:center; justify-content:center;
+                                    font-size:20px; flex-shrink:0;">
+                            @GetIconeServico(servico.Nome)
+                        </div>
+                        <div>
+                            <div style="font-size:1.1rem; font-weight:700; color:#3b0764;">
+                                @servico.Nome
+                            </div>
+                            @if (!string.IsNullOrEmpty(servico.Descricao))
+                            {
+                                <div style="font-size:13px; color:#7c3aed; margin-top:2px;">
+                                    @servico.Descricao
+                                </div>
+                            }
+                        </div>
                     </div>
-                    <div class="card-body p-4">
+
+                    <!-- Body do card -->
+                    <div style="padding:20px 24px;">
                         @if (servico.Precos.Any())
                         {
-                            <h6 class="text-muted mb-3 fw-bold">💰 Preços por porte:</h6>
-                            <div class="row g-3">
+                            <div style="font-size:11px; font-weight:600; color:#9333ea;
+                                        letter-spacing:1px; text-transform:uppercase; margin-bottom:12px;">
+                                Preços por porte
+                            </div>
+                            <div class="row g-2 mb-4">
                                 @foreach (var preco in servico.Precos.OrderBy(p => p.Porte))
                                 {
                                     <div class="col-6 col-md-3">
-                                        <div class="text-center p-3 rounded"
-                                             style="background-color: #f8f0ff; border: 2px solid #e0c3fc;">
-                                            <div class="fw-bold mb-1" style="color: #6a0dad;">
+                                        <div style="background:#faf7ff; border:1px solid #ede9fe;
+                                                    border-radius:12px; padding:12px 8px; text-align:center;">
+                                            <div style="font-size:12px; font-weight:600; color:#7c3aed; margin-bottom:4px;">
                                                 @GetIconePorte(preco.Porte) @preco.Porte.ToString()
                                             </div>
-                                            <div class="fs-5 fw-bold text-dark">
-                                                R$ @preco.Preco.ToString("F2")
+                                            <div style="font-size:1rem; font-weight:700; color:#3b0764;">
+                                                <span style="font-size:11px; font-weight:400; color:#9ca3af;">R$</span>
+                                                @preco.Preco.ToString("F2")
                                             </div>
                                         </div>
                                     </div>
@@ -67,29 +99,21 @@
                         }
                         else
                         {
-                            <p class="text-muted small">Preços sob consulta.</p>
+                            <p class="text-muted small mb-3">Preços sob consulta.</p>
                         }
-                        <div class="mt-4">
-                            <a href="/agendamento" class="btn fw-bold text-white px-4"
-                               style="background-color: #6a0dad; border-radius: 8px;">
-                                <i class="bi bi-calendar-check me-2"></i>Agendar este serviço
-                            </a>
-                        </div>
+
+                        <a href="/agendamento"
+                           style="display:inline-flex; align-items:center; gap:8px; background:#7c3aed;
+                                  color:white; border-radius:10px; padding:10px 22px; font-size:14px;
+                                  font-weight:600; text-decoration:none;">
+                            <i class="bi bi-calendar-check"></i> Agendar este serviço
+                        </a>
                     </div>
+
                 </div>
             }
         }
-    </div>
-</section>
 
-<section class="py-5 text-white text-center"
-         style="background: linear-gradient(135deg, #6a0dad, #9b30ff);">
-    <div class="container">
-        <h3 class="fw-bold mb-3">Pronto para agendar? 🐾</h3>
-        <p class="lead mb-4 opacity-75">Escolha o melhor dia para seu pet!</p>
-        <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-5">
-            <i class="bi bi-calendar-check me-2"></i>Agendar Agora
-        </a>
     </div>
 </section>
 

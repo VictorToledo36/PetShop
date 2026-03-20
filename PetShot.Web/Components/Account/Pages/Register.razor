@@ -15,42 +15,62 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Cadastro - Cantinho da Roça</PageTitle>
 
-<h1>Register</h1>
+<div style="min-height: 100vh; background: linear-gradient(135deg, #6a0dad, #9b30ff);"
+     class="d-flex align-items-center justify-content-center py-5">
+    <div class="card shadow-lg border-0 p-4" style="width: 100%; max-width: 420px; border-radius: 16px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold" style="color: #6a0dad;">🐾 Cantinho da Roça</h2>
+            <p class="text-muted">Crie sua conta</p>
+        </div>
 
-<div class="row">
-    <div class="col-md-4">
         <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+
+        <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
+            <ValidationSummary class="text-danger small" role="alert" />
+
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
+                <InputText @bind-Value="Input.NomeCompleto" class="form-control" placeholder="Seu nome" />
+                <label>👤 Nome Completo</label>
+                <ValidationMessage For="() => Input.NomeCompleto" class="text-danger small" />
             </div>
+
             <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
+                <InputText @bind-Value="Input.Email" class="form-control"
+                           autocomplete="username" placeholder="seu@email.com" />
+                <label>📧 Email</label>
+                <ValidationMessage For="() => Input.Email" class="text-danger small" />
             </div>
+
             <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                <InputText type="password" @bind-Value="Input.Password" class="form-control"
+                           autocomplete="new-password" placeholder="senha" />
+                <label>🔒 Senha</label>
+                <ValidationMessage For="() => Input.Password" class="text-danger small" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control"
+                           autocomplete="new-password" placeholder="confirmar senha" />
+                <label>🔒 Confirmar Senha</label>
+                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger small" />
+            </div>
+
+            <button type="submit" class="w-100 btn btn-lg fw-bold text-white"
+                    style="background-color: #6a0dad; border-radius: 8px;">
+                Cadastrar
+            </button>
+
+            <hr class="my-3" />
+
+            <div class="text-center small">
+                <a href="Account/Login" style="color: #6a0dad;" class="fw-bold">
+                    Já tem conta? Faça login
+                </a>
+            </div>
         </EditForm>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
     </div>
 </div>
 
@@ -63,11 +83,13 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    private string? Message => identityErrors is null ? null : $"❌ {string.Join(" • ", identityErrors.Select(e => TraducaoErro(e.Code)))}";
 
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
+
+        user.NomeCompleto = Input.NomeCompleto;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -80,7 +102,8 @@
             return;
         }
 
-        Logger.LogInformation("User created a new account with password.");
+        await UserManager.AddToRoleAsync(user, "Cliente");
+        Logger.LogInformation("Novo usuário cadastrado.");
 
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -93,8 +116,7 @@
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
-            RedirectManager.RedirectTo(
-                "Account/RegisterConfirmation",
+            RedirectManager.RedirectTo("Account/RegisterConfirmation",
                 new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
         }
 
@@ -104,42 +126,46 @@
 
     private ApplicationUser CreateUser()
     {
-        try
-        {
-            return Activator.CreateInstance<ApplicationUser>();
-        }
-        catch
-        {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
-        }
+        try { return Activator.CreateInstance<ApplicationUser>(); }
+        catch { throw new InvalidOperationException($"Não foi possível criar '{nameof(ApplicationUser)}'."); }
     }
 
     private IUserEmailStore<ApplicationUser> GetEmailStore()
     {
         if (!UserManager.SupportsUserEmail)
-        {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
-        }
+            throw new NotSupportedException("Requer suporte a email.");
         return (IUserEmailStore<ApplicationUser>)UserStore;
     }
 
     private sealed class InputModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Nome obrigatório")]
+        [StringLength(100)]
+        public string NomeCompleto { get; set; } = "";
+
+        [Required(ErrorMessage = "Email obrigatório")]
+        [EmailAddress(ErrorMessage = "Email inválido")]
         public string Email { get; set; } = "";
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Senha obrigatória")]
+        [StringLength(100, ErrorMessage = "Mínimo {2} caracteres.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
         public string Password { get; set; } = "";
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare("Password", ErrorMessage = "As senhas não coincidem.")]
         public string ConfirmPassword { get; set; } = "";
     }
+
+    private string TraducaoErro(string code) => code switch
+    {
+        "PasswordTooShort" => "Senha deve ter pelo menos 8 caracteres.",
+        "PasswordRequiresNonAlphanumeric" => "Senha deve ter pelo menos um caractere especial (!@#$...).",
+        "PasswordRequiresLower" => "Senha deve ter pelo menos uma letra minúscula.",
+        "PasswordRequiresUpper" => "Senha deve ter pelo menos uma letra maiúscula.",
+        "PasswordRequiresDigit" => "Senha deve ter pelo menos um número.",
+        "DuplicateEmail" => "Este email já está cadastrado.",
+        "DuplicateUserName" => "Este usuário já existe.",
+        _ => "Erro ao cadastrar. Tente novamente."
+    };
 }
