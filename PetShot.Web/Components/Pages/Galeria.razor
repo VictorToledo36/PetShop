@@ -1,0 +1,101 @@
+﻿@page "/galeria"
+@rendermode InteractiveServer
+@inject IWebHostEnvironment Env
+
+<PageTitle>Galeria - Cantinho da Roça</PageTitle>
+
+<!-- GALERIA -->
+<section style="background:#f7f4ff; padding: 100px 0 64px;">
+    <div class="container">
+
+        @if (!fotos.Any())
+        {
+            <div class="text-center py-5">
+                <div class="fs-1">📷</div>
+                <h4 class="text-muted mt-3">Nenhuma foto ainda.</h4>
+                <p class="text-muted">Em breve as fotos dos nossos pets estarão aqui!</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var foto in fotos)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div style="border-radius:16px; overflow:hidden; cursor:pointer;
+                                    box-shadow: 0 2px 12px rgba(124,58,237,0.08);
+                                    border:1px solid #ede9fe; aspect-ratio: 1/1;"
+                             @onclick="() => AbrirFoto(foto)">
+                            <img src="@foto.Caminho" alt="@foto.Descricao"
+                                 style="width:100%; height:100%; object-fit:cover; transition: transform 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.05)'"
+                                 onmouseout="this.style.transform='scale(1)'" />
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</section>
+
+<!-- LIGHTBOX -->
+@if (fotoSelecionada != null)
+{
+    <div style="position:fixed; top:0; left:0; right:0; bottom:0; z-index:9999;
+                background:rgba(0,0,0,0.85); display:flex; align-items:center;
+                justify-content:center; padding:20px;"
+         @onclick="FecharFoto">
+        <div style="position:relative; max-width:800px; width:100%;"
+             @onclick:stopPropagation="true">
+            <img src="@fotoSelecionada.Caminho" alt="@fotoSelecionada.Descricao"
+                 style="width:100%; border-radius:16px; object-fit:contain; max-height:80vh;" />
+            @if (!string.IsNullOrEmpty(fotoSelecionada.Descricao))
+            {
+                <div style="text-align:center; color:white; margin-top:12px;
+                            font-size:15px; opacity:.85;">
+                    @fotoSelecionada.Descricao
+                </div>
+            }
+            <button @onclick="FecharFoto"
+                    style="position:absolute; top:-16px; right:-16px; width:36px; height:36px;
+                           background:#7c3aed; border:none; border-radius:50%; color:white;
+                           font-size:18px; cursor:pointer; display:flex; align-items:center;
+                           justify-content:center; font-weight:700;">
+                ✕
+            </button>
+        </div>
+    </div>
+}
+
+@code {
+    private List<FotoGaleria> fotos = new();
+    private FotoGaleria? fotoSelecionada = null;
+
+    protected override void OnInitialized()
+    {
+        var pasta = Path.Combine(Env.WebRootPath, "images", "galeria");
+
+        if (Directory.Exists(pasta))
+        {
+            var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+            fotos = Directory.GetFiles(pasta)
+                .Where(f => extensoesPermitidas.Contains(Path.GetExtension(f).ToLower()))
+                .Select(f => new FotoGaleria
+                    {
+                        Caminho = "/images/galeria/" + Path.GetFileName(f)
+                    })
+                .ToList();
+        }
+    }
+
+    private void AbrirFoto(FotoGaleria foto) => fotoSelecionada = foto;
+    private void FecharFoto() => fotoSelecionada = null;
+
+    public class FotoGaleria
+    {
+        public string Caminho { get; set; } = "";
+        public string Descricao { get; set; } = "";
+    }
+}
