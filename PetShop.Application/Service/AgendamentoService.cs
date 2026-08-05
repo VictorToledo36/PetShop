@@ -25,6 +25,19 @@ public class AgendamentoService : IAgendamentoService
 
     public async Task<bool> SolicitarAgendamentoAsync(Agendamento agendamento)
     {
+        var petValido = await _context.Pets.AnyAsync(p =>
+            p.Id == agendamento.PetId &&
+            p.ApplicationUserId == agendamento.ApplicationUserId &&
+            p.Ativo);
+        if (!petValido) return false;
+
+        var servicoValido = await _context.Servicos.AnyAsync(s =>
+            s.Id == agendamento.ServicoId && s.Ativo);
+        if (!servicoValido) return false;
+
+        var dataHora = agendamento.DataSolicitada.Date + agendamento.HorarioSolicitado.ToTimeSpan();
+        if (dataHora <= DateTime.Now) return false;
+
         agendamento.Status = StatusAgendamento.Pendente;
         agendamento.DataCriacao = DateTime.UtcNow;
         _context.Agendamentos.Add(agendamento);
