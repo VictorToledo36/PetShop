@@ -1,0 +1,243 @@
+@page "/pets"
+@rendermode InteractiveServer
+@inject IPetService PetService
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using PetShop.Application.Interfaces
+@using PetShop.Domain.Entities
+@using PetShop.Domain.Enums
+@using PetShop.Infrastructure.Persistence
+@attribute [Authorize]
+
+<PageTitle>Meus Pets</PageTitle>
+
+<div class="container-fluid py-4" style="padding-top: 90px !important; min-height: calc(100vh - 200px);">
+
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-0" style="color: #6a0dad;">🐾 Meus Pets</h3>
+                <p class="text-muted small mb-0">Cadastre seus pets para poder agendar um serviço</p>
+            </div>
+            <button class="btn text-white fw-bold" style="background-color: #6a0dad;"
+                    @onclick="AbrirFormNovo">
+                <i class="bi bi-plus-circle me-2"></i>Novo Pet
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(mensagem))
+        {
+            <div class="alert @(sucesso ? "alert-success" : "alert-danger") alert-dismissible">
+                @mensagem
+                <button type="button" class="btn-close" @onclick="() => mensagem = null"></button>
+            </div>
+        }
+
+        @if (mostrarForm)
+        {
+            <div class="card border-0 shadow mb-4" style="border-radius: 16px;">
+                <div class="card-header text-white fw-bold py-3"
+                     style="background-color: #6a0dad; border-radius: 16px 16px 0 0;">
+                    @(editando ? "✏️ Editar Pet" : "➕ Novo Pet")
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nome</label>
+                            <input @bind="petForm.Nome" class="form-control" placeholder="Ex: Rex" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Raça</label>
+                            <input @bind="petForm.Raca" class="form-control" placeholder="Ex: Labrador" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Porte</label>
+                            <select class="form-select" @bind="petForm.Porte">
+                                @foreach (var porte in Enum.GetValues<PortePet>())
+                                {
+                                    <option value="@porte">@GetIconePorte(porte) @porte</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Peso (kg)</label>
+                            <input type="number" step="0.1" min="0" @bind="petForm.Peso" class="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Observação</label>
+                            <textarea @bind="petForm.Observacao" class="form-control" rows="2"
+                                      placeholder="Alergias, comportamento, cuidados especiais..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button class="btn text-white fw-bold px-4" style="background-color: #6a0dad;"
+                                @onclick="SalvarPet">
+                            <i class="bi bi-check-circle me-2"></i>Salvar
+                        </button>
+                        <button class="btn btn-outline-secondary px-4" @onclick="FecharForm">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (carregando)
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border" style="color: #6a0dad;" role="status"></div>
+            </div>
+        }
+        else if (!pets.Any())
+        {
+            <div class="text-center py-5">
+                <div class="fs-1">🐾</div>
+                <h5 class="text-muted">Você ainda não cadastrou nenhum pet.</h5>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var pet in pets)
+                {
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow h-100" style="border-radius: 12px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="fw-bold mb-1" style="color: #6a0dad;">
+                                            @GetIconePorte(pet.Porte) @pet.Nome
+                                        </h5>
+                                        <p class="text-muted small mb-1">@pet.Raca</p>
+                                        <p class="text-muted small mb-0">@pet.Porte @(pet.Peso is not null ? $"• {pet.Peso} kg" : "")</p>
+                                        @if (!string.IsNullOrWhiteSpace(pet.Observacao))
+                                        {
+                                            <p class="small mt-2 mb-0">@pet.Observacao</p>
+                                        }
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-secondary" @onclick="() => AbrirFormEditar(pet)">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoverPet(pet.Id)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private string userId = string.Empty;
+    private List<Pet> pets = new();
+    private bool carregando = true;
+    private bool mostrarForm = false;
+    private bool editando = false;
+    private string? mensagem;
+    private bool sucesso;
+
+    private Pet petForm = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState!;
+        userId = UserManager.GetUserId(authState.User) ?? string.Empty;
+        await CarregarPets();
+    }
+
+    private async Task CarregarPets()
+    {
+        carregando = true;
+        pets = await PetService.ObterPorUsuarioAsync(userId);
+        carregando = false;
+    }
+
+    private void AbrirFormNovo()
+    {
+        petForm = new Pet();
+        editando = false;
+        mostrarForm = true;
+    }
+
+    private void AbrirFormEditar(Pet pet)
+    {
+        petForm = new Pet
+        {
+            Id = pet.Id,
+            Nome = pet.Nome,
+            Raca = pet.Raca,
+            Peso = pet.Peso,
+            Porte = pet.Porte,
+            Observacao = pet.Observacao
+        };
+        editando = true;
+        mostrarForm = true;
+    }
+
+    private void FecharForm()
+    {
+        mostrarForm = false;
+        petForm = new();
+    }
+
+    private async Task SalvarPet()
+    {
+        if (string.IsNullOrWhiteSpace(petForm.Nome))
+        {
+            mensagem = "❌ Nome do pet é obrigatório.";
+            sucesso = false;
+            return;
+        }
+
+        petForm.ApplicationUserId = userId;
+
+        bool resultado = editando
+            ? await PetService.AtualizarAsync(petForm, userId)
+            : await PetService.CriarAsync(petForm);
+
+        if (resultado)
+        {
+            mensagem = editando ? "✅ Pet atualizado!" : "✅ Pet cadastrado!";
+            sucesso = true;
+            FecharForm();
+            await CarregarPets();
+        }
+        else
+        {
+            mensagem = "❌ Erro ao salvar o pet.";
+            sucesso = false;
+        }
+    }
+
+    private async Task RemoverPet(int id)
+    {
+        var resultado = await PetService.DesativarAsync(id, userId);
+        if (resultado)
+        {
+            mensagem = "✅ Pet removido!";
+            sucesso = true;
+            await CarregarPets();
+        }
+    }
+
+    private string GetIconePorte(PortePet porte) => porte switch
+    {
+        PortePet.Pequeno => "🐩",
+        PortePet.Medio => "🐕",
+        PortePet.Grande => "🦮",
+        PortePet.GrandePorte => "🐘",
+        _ => "🐾"
+    };
+}

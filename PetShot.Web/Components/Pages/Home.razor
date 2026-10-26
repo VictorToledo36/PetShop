@@ -5,13 +5,11 @@
 
 <!-- HERO -->
 <section style="background: linear-gradient(135deg, #6a0dad, #9b30ff); padding-top: 70px; position: relative;"
-         class="text-white py-5">
+         class="text-white py-5 page-fade">
     <div class="container py-4">
         <div class="row align-items-center g-5">
-            <div class="col-lg-6">
-                <span style="display:inline-block; background:rgba(255,255,255,0.15); color:#fff;
-                             font-size:12px; padding:4px 14px; border-radius:20px; margin-bottom:20px;
-                             border:1px solid rgba(255,255,255,0.25); letter-spacing:.5px;">
+            <div class="col-lg-6 reveal is-visible">
+                <span class="section-badge-hero badge-pulse">
                     Pet Shop • Banho & Tosa
                 </span>
                 <h1 class="display-4 fw-bold mb-3" style="line-height:1.2;">
@@ -21,20 +19,20 @@
                     Banho completo, tosa profissional e muito cuidado para o seu melhor amigo se sentir feliz e saudável.
                 </p>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-4">
+                    <a href="/agendamento" class="btn btn-warning btn-lg fw-bold px-4 hover-lift">
                         <i class="bi bi-calendar-check me-2"></i>Agendar Agora
                     </a>
-                    <a href="/servicos" class="btn btn-outline-light btn-lg px-4">
+                    <a href="/servicos" class="btn btn-outline-light btn-lg px-4 hover-lift">
                         Ver Serviços
                     </a>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 reveal reveal-delay-1 is-visible">
                 <!-- Substitua pelo <img> com sua foto real -->
                 <div style="background:rgba(255,255,255,0.12); border-radius:20px; height:320px;
                             display:flex; align-items:center; justify-content:center;
                             border:1px solid rgba(255,255,255,0.2); font-size:80px;">
-                    🐾
+                    <span class="float-icon">🐾</span>
                 </div>
             </div>
         </div>
@@ -47,9 +45,9 @@
 <section class="py-5">
     <div class="container py-2">
         <div class="row align-items-center g-5">
-            <div class="col-lg-6">
+            <div class="col-lg-6 reveal">
                 <!-- Substitua pelo <img> com foto do banho -->
-                <div style="background:#f3e8ff; border-radius:20px; height:360px;
+                <div class="hover-lift" style="background:#f3e8ff; border-radius:20px; height:360px;
             display:flex; align-items:center; justify-content:center;
             border:1px solid #e9d5ff; overflow:hidden;">
 
@@ -59,10 +57,8 @@
 
                 </div>
             </div>
-            <div class="col-lg-6">
-                <span style="display:inline-block; background:#f3e8ff; color:#7c3aed;
-                             font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px;
-                             letter-spacing:.5px; margin-bottom:16px; text-transform:uppercase;">
+            <div class="col-lg-6 reveal reveal-delay-1">
+                <span class="section-badge">
                     Banho Completo
                 </span>
                 <h2 class="fw-bold mb-3" style="font-size:1.9rem; color:#1a1a2e; line-height:1.25;">
@@ -85,8 +81,7 @@
                         </li>
                     }
                 </ul>
-                <a href="/agendamento" class="btn fw-bold text-white px-4 py-2"
-                   style="background:#7c3aed; border-radius:10px;">
+                <a href="/agendamento" class="btn btn-brand fw-bold px-4 py-2" style="border-radius:10px;">
                     <i class="bi bi-calendar-check me-2"></i>Agendar Banho
                 </a>
             </div>
@@ -100,9 +95,9 @@
 <section class="py-5">
     <div class="container py-3">
         <div class="row align-items-center g-5">
-            <div class="col-lg-6 order-lg-2">
+            <div class="col-lg-6 order-lg-2 reveal">
                 <!-- Substitua pelo <img> com foto da tosa -->
-                <div style="background:#faf5ff; border-radius:20px; height:360px;
+                <div class="hover-lift" style="background:#faf5ff; border-radius:20px; height:360px;
                             display:flex; align-items:center; justify-content:center;
                             border:1px solid #ede9fe; font-size:80px; overflow:hidden;">
 
@@ -111,10 +106,8 @@
                          style="width:100%; height:100%; object-fit:cover;" />
                 </div>
             </div>
-            <div class="col-lg-6 order-lg-1">
-                <span style="display:inline-block; background:#f3e8ff; color:#7c3aed;
-                             font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px;
-                             letter-spacing:.5px; margin-bottom:16px; text-transform:uppercase;">
+            <div class="col-lg-6 order-lg-1 reveal reveal-delay-1">
+                <span class="section-badge">
                     Tosa & Higiene
                 </span>
                 <h2 class="fw-bold mb-3" style="font-size:1.9rem; color:#1a1a2e; line-height:1.25;">
@@ -137,8 +130,7 @@
                         </li>
                     }
                 </ul>
-                <a href="/agendamento" class="btn fw-bold text-white px-4 py-2"
-                   style="background:#7c3aed; border-radius:10px;">
+                <a href="/agendamento" class="btn btn-brand fw-bold px-4 py-2" style="border-radius:10px;">
                     <i class="bi bi-calendar-check me-2"></i>Agendar Tosa
                 </a>
             </div>
@@ -152,42 +144,27 @@
         <h2 class="fw-bold mb-2" style="color:#1a1a2e;">Como funciona o agendamento?</h2>
         <p class="text-muted mb-5">Simples, rápido e 100% online</p>
         <div class="row g-4">
-            <div class="col-md-4">
-                <div style="background:#fff; border-radius:16px; padding:28px;
-                            border:1px solid #ede9fe; text-align:left; height:100%;">
-                    <div style="width:36px; height:36px; background:#7c3aed; color:#fff;
-                                border-radius:10px; display:flex; align-items:center;
-                                justify-content:center; font-weight:800; font-size:14px; margin-bottom:16px;">
-                        1
-                    </div>
+            <div class="col-md-4 reveal">
+                <div class="feature-card hover-lift" style="text-align:left;">
+                    <div class="step-number">1</div>
                     <h5 class="fw-bold mb-2" style="color:#1a1a2e;">Escolha o serviço</h5>
                     <p class="text-muted small" style="line-height:1.6;">
                         Selecione banho, tosa ou tosa higiênica. Você pode combinar serviços!
                     </p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div style="background:#fff; border-radius:16px; padding:28px;
-                            border:1px solid #ede9fe; text-align:left; height:100%;">
-                    <div style="width:36px; height:36px; background:#7c3aed; color:#fff;
-                                border-radius:10px; display:flex; align-items:center;
-                                justify-content:center; font-weight:800; font-size:14px; margin-bottom:16px;">
-                        2
-                    </div>
+            <div class="col-md-4 reveal reveal-delay-1">
+                <div class="feature-card hover-lift" style="text-align:left;">
+                    <div class="step-number">2</div>
                     <h5 class="fw-bold mb-2" style="color:#1a1a2e;">Escolha data e horário</h5>
                     <p class="text-muted small" style="line-height:1.6;">
                         Veja os horários disponíveis e escolha o que for melhor para você.
                     </p>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div style="background:#fff; border-radius:16px; padding:28px;
-                            border:1px solid #ede9fe; text-align:left; height:100%;">
-                    <div style="width:36px; height:36px; background:#7c3aed; color:#fff;
-                                border-radius:10px; display:flex; align-items:center;
-                                justify-content:center; font-weight:800; font-size:14px; margin-bottom:16px;">
-                        3
-                    </div>
+            <div class="col-md-4 reveal reveal-delay-2">
+                <div class="feature-card hover-lift" style="text-align:left;">
+                    <div class="step-number">3</div>
                     <h5 class="fw-bold mb-2" style="color:#1a1a2e;">É hora do banho!</h5>
                     <p class="text-muted small" style="line-height:1.6;">
                         Traga seu pet no horário agendado. Cuidamos de tudo com muito amor.
@@ -204,18 +181,12 @@
         <h2 class="fw-bold mb-2" style="color:#1a1a2e;">Por que escolher o Cantinho da Roça?</h2>
         <p class="text-muted mb-5">Seu pet merece o melhor cuidado</p>
         <div class="row g-4">
-            @foreach (var item in new[] {
-            ("❤️", "Amor pelos Animais", "Tratamos cada pet como se fosse nosso"),
-            ("⭐", "Profissionais Experientes", "Anos de experiência no cuidado animal"),
-            ("🛡️", "Ambiente Seguro", "Espaço limpo, seguro e aconchegante"),
-            ("📅", "Agendamento Fácil", "Agende online em poucos cliques")
-            })
+            @for (var i = 0; i < beneficios.Length; i++)
             {
-                <div class="col-md-3 col-6">
-                    <div style="padding:28px 20px; border-radius:16px; border:1px solid #ede9fe; height:100%;">
-                        <div style="width:52px; height:52px; background:#f3e8ff; border-radius:14px;
-                                    display:flex; align-items:center; justify-content:center;
-                                    font-size:22px; margin:0 auto 16px;">
+                var item = beneficios[i];
+                <div class="col-md-3 col-6 reveal reveal-delay-@((i % 3) + 1)">
+                    <div class="hover-lift" style="padding:28px 20px; border-radius:16px; border:1px solid #ede9fe; height:100%;">
+                        <div class="icon-tile">
                             @item.Item1
                         </div>
                         <h6 class="fw-bold mb-2" style="color:#1a1a2e;">@item.Item2</h6>
@@ -226,3 +197,12 @@
         </div>
     </div>
 </section>
+
+@code {
+    private readonly (string, string, string)[] beneficios = new[] {
+        ("❤️", "Amor pelos Animais", "Tratamos cada pet como se fosse nosso"),
+        ("⭐", "Profissionais Experientes", "Anos de experiência no cuidado animal"),
+        ("🛡️", "Ambiente Seguro", "Espaço limpo, seguro e aconchegante"),
+        ("📅", "Agendamento Fácil", "Agende online em poucos cliques")
+    };
+}

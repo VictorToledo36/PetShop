@@ -1,0 +1,209 @@
+@page "/admin/agendamentos"
+@rendermode InteractiveServer
+@inject IAgendamentoService AgendamentoService
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using PetShop.Application.Interfaces
+@using PetShop.Domain.Entities
+@using PetShop.Domain.Enums
+@using PetShop.Infrastructure.Persistence
+@attribute [Authorize(Roles = "Admin")]
+
+<PageTitle>Gerenciar Agendamentos - Admin</PageTitle>
+
+<div class="container-fluid py-4" style="padding-top: 90px !important; min-height: calc(100vh - 200px);">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-0" style="color: #6a0dad;">📅 Gerenciar Agendamentos</h3>
+                <p class="text-muted small mb-0">Confirme, recuse ou conclua os agendamentos</p>
+            </div>
+            <select class="form-select" style="max-width: 220px;" @bind="filtroStatus">
+                <option value="">Todos os status</option>
+                @foreach (var status in Enum.GetValues<StatusAgendamento>())
+                {
+                    <option value="@status">@status</option>
+                }
+            </select>
+        </div>
+
+        @if (!string.IsNullOrEmpty(mensagem))
+        {
+            <div class="alert @(sucesso ? "alert-success" : "alert-danger") alert-dismissible">
+                @mensagem
+                <button type="button" class="btn-close" @onclick="() => mensagem = null"></button>
+            </div>
+        }
+
+        @if (carregando)
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border" style="color: #6a0dad;" role="status"></div>
+            </div>
+        }
+        else if (!AgendamentosFiltrados.Any())
+        {
+            <div class="text-center py-5">
+                <div class="fs-1">📅</div>
+                <h5 class="text-muted">Nenhum agendamento encontrado.</h5>
+            </div>
+        }
+        else
+        {
+            @foreach (var ag in AgendamentosFiltrados)
+            {
+                <div class="card border-0 shadow mb-3" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                            <div>
+                                <h5 class="fw-bold mb-1" style="color: #6a0dad;">
+                                    @ag.Servico.Nome — @ag.Pet.Nome
+                                </h5>
+                                <p class="text-muted small mb-1">
+                                    <i class="bi bi-person me-1"></i>@ObterNomeCliente(ag.ApplicationUserId)
+                                </p>
+                                <p class="text-muted small mb-1">
+                                    <i class="bi bi-calendar-event me-1"></i>@ag.DataSolicitada.ToString("dd/MM/yyyy")
+                                    <i class="bi bi-clock ms-3 me-1"></i>@ag.HorarioSolicitado.ToString("HH:mm")
+                                </p>
+                                @if (!string.IsNullOrWhiteSpace(ag.ObservacaoCliente))
+                                {
+                                    <p class="small mb-0">@ag.ObservacaoCliente</p>
+                                }
+                            </div>
+                            <div class="text-end">
+                                <span class="badge rounded-pill px-3 py-2 @GetCorStatus(ag.Status)">
+                                    @ag.Status
+                                </span>
+
+                                @if (ag.Status == StatusAgendamento.Pendente)
+                                {
+                                    <div class="mt-2 d-flex gap-2 justify-content-end">
+                                        <button class="btn btn-sm btn-success" @onclick="() => Confirmar(ag.Id)">
+                                            <i class="bi bi-check-lg"></i> Confirmar
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => AbrirRecusa(ag.Id)">
+                                            <i class="bi bi-x-lg"></i> Recusar
+                                        </button>
+                                    </div>
+                                }
+                                else if (ag.Status == StatusAgendamento.Confirmado)
+                                {
+                                    <div class="mt-2 d-flex justify-content-end">
+                                        <button class="btn btn-sm btn-info" @onclick="() => Concluir(ag.Id)">
+                                            <i class="bi bi-flag"></i> Concluir
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (agendamentoRecusaId == ag.Id)
+                        {
+                            <div class="mt-3 p-3 rounded" style="background-color: #f8f0ff;">
+                                <label class="form-label fw-bold small">Motivo da recusa</label>
+                                <div class="d-flex gap-2">
+                                    <input class="form-control" @bind="motivoRecusa" placeholder="Explique o motivo..." />
+                                    <button class="btn btn-danger" @onclick="() => Recusar(ag.Id)">Confirmar recusa</button>
+                                    <button class="btn btn-outline-secondary" @onclick="() => agendamentoRecusaId = null">Cancelar</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    private List<Agendamento> agendamentos = new();
+    private Dictionary<string, string> nomesClientes = new();
+    private bool carregando = true;
+    private string? mensagem;
+    private bool sucesso;
+    private string filtroStatus = "";
+
+    private int? agendamentoRecusaId;
+    private string motivoRecusa = string.Empty;
+
+    private IEnumerable<Agendamento> AgendamentosFiltrados =>
+        string.IsNullOrEmpty(filtroStatus)
+            ? agendamentos
+            : agendamentos.Where(a => a.Status.ToString() == filtroStatus);
+
+    protected override async Task OnInitializedAsync() => await Carregar();
+
+    private async Task Carregar()
+    {
+        carregando = true;
+        agendamentos = await AgendamentoService.ObterTodosAsync();
+
+        nomesClientes.Clear();
+        foreach (var userId in agendamentos.Select(a => a.ApplicationUserId).Distinct())
+        {
+            var usuario = await UserManager.FindByIdAsync(userId);
+            nomesClientes[userId] = usuario?.NomeCompleto ?? "Cliente";
+        }
+
+        carregando = false;
+    }
+
+    private string ObterNomeCliente(string userId) =>
+        nomesClientes.TryGetValue(userId, out var nome) ? nome : "Cliente";
+
+    private async Task Confirmar(int id)
+    {
+        if (await AgendamentoService.ConfirmarAsync(id))
+        {
+            mensagem = "✅ Agendamento confirmado!";
+            sucesso = true;
+            await Carregar();
+        }
+    }
+
+    private async Task Concluir(int id)
+    {
+        if (await AgendamentoService.ConcluirAsync(id))
+        {
+            mensagem = "✅ Agendamento concluído!";
+            sucesso = true;
+            await Carregar();
+        }
+    }
+
+    private void AbrirRecusa(int id)
+    {
+        agendamentoRecusaId = id;
+        motivoRecusa = string.Empty;
+    }
+
+    private async Task Recusar(int id)
+    {
+        if (string.IsNullOrWhiteSpace(motivoRecusa))
+        {
+            mensagem = "❌ Informe o motivo da recusa.";
+            sucesso = false;
+            return;
+        }
+
+        if (await AgendamentoService.RecusarAsync(id, motivoRecusa))
+        {
+            mensagem = "✅ Agendamento recusado.";
+            sucesso = true;
+            agendamentoRecusaId = null;
+            await Carregar();
+        }
+    }
+
+    private string GetCorStatus(StatusAgendamento status) => status switch
+    {
+        StatusAgendamento.Pendente => "bg-warning text-dark",
+        StatusAgendamento.Confirmado => "bg-success text-white",
+        StatusAgendamento.Recusado => "bg-danger text-white",
+        StatusAgendamento.Cancelado => "bg-secondary text-white",
+        StatusAgendamento.Concluido => "bg-info text-dark",
+        _ => "bg-light text-dark"
+    };
+}

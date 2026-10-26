@@ -1,0 +1,158 @@
+@page "/dashboard"
+@rendermode InteractiveServer
+@inject IAgendamentoService AgendamentoService
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using PetShop.Application.Interfaces
+@using PetShop.Domain.Entities
+@using PetShop.Domain.Enums
+@using PetShop.Infrastructure.Persistence
+@attribute [Authorize]
+
+<PageTitle>Minha Área</PageTitle>
+
+<div class="container-fluid py-4" style="padding-top: 90px !important; min-height: calc(100vh - 200px);">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-0" style="color: #6a0dad;">🐾 Minha Área</h3>
+                <p class="text-muted small mb-0">Seus agendamentos e pets</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/pets" class="btn btn-outline-secondary fw-bold">
+                    <i class="bi bi-heart me-2"></i>Meus Pets
+                </a>
+                <a href="/agendamento" class="btn text-white fw-bold" style="background-color: #6a0dad;">
+                    <i class="bi bi-plus-circle me-2"></i>Novo Agendamento
+                </a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(mensagem))
+        {
+            <div class="alert @(sucesso ? "alert-success" : "alert-danger") alert-dismissible">
+                @mensagem
+                <button type="button" class="btn-close" @onclick="() => mensagem = null"></button>
+            </div>
+        }
+
+        @if (carregando)
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border" style="color: #6a0dad;" role="status"></div>
+            </div>
+        }
+        else if (!agendamentos.Any())
+        {
+            <div class="text-center py-5">
+                <div class="fs-1">📅</div>
+                <h5 class="text-muted">Você ainda não tem nenhum agendamento.</h5>
+            </div>
+        }
+        else
+        {
+            @foreach (var ag in agendamentos)
+            {
+                <div class="card border-0 shadow mb-3" style="border-radius: 12px;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <h5 class="fw-bold mb-1" style="color: #6a0dad;">
+                                    @ag.Servico.Nome — @ag.Pet.Nome
+                                </h5>
+                                <p class="text-muted small mb-1">
+                                    <i class="bi bi-calendar-event me-1"></i>@ag.DataSolicitada.ToString("dd/MM/yyyy")
+                                    <i class="bi bi-clock ms-3 me-1"></i>@ag.HorarioSolicitado.ToString("HH:mm")
+                                </p>
+                                @if (!string.IsNullOrWhiteSpace(ag.ObservacaoCliente))
+                                {
+                                    <p class="small mb-1">@ag.ObservacaoCliente</p>
+                                }
+                                @if (ag.Status == StatusAgendamento.Recusado && !string.IsNullOrWhiteSpace(ag.MotivoRecusa))
+                                {
+                                    <p class="small text-danger mb-0">Motivo: @ag.MotivoRecusa</p>
+                                }
+                            </div>
+                            <div class="text-end">
+                                <span class="badge rounded-pill px-3 py-2 @GetCorStatus(ag.Status)">
+                                    @GetTextoStatus(ag.Status)
+                                </span>
+                                @if (ag.Status == StatusAgendamento.Pendente)
+                                {
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="() => Cancelar(ag.Id)">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthState { get; set; }
+
+    private string userId = string.Empty;
+    private List<Agendamento> agendamentos = new();
+    private bool carregando = true;
+    private string? mensagem;
+    private bool sucesso;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState!;
+        userId = UserManager.GetUserId(authState.User) ?? string.Empty;
+        await Carregar();
+    }
+
+    private async Task Carregar()
+    {
+        carregando = true;
+        agendamentos = await AgendamentoService.ObterPorUsuarioAsync(userId);
+        carregando = false;
+    }
+
+    private async Task Cancelar(int id)
+    {
+        var resultado = await AgendamentoService.CancelarAsync(id, userId);
+        if (resultado)
+        {
+            mensagem = "✅ Agendamento cancelado.";
+            sucesso = true;
+            await Carregar();
+        }
+        else
+        {
+            mensagem = "❌ Não foi possível cancelar este agendamento.";
+            sucesso = false;
+        }
+    }
+
+    private string GetTextoStatus(StatusAgendamento status) => status switch
+    {
+        StatusAgendamento.Pendente => "⏳ Pendente",
+        StatusAgendamento.Confirmado => "✅ Confirmado",
+        StatusAgendamento.Recusado => "❌ Recusado",
+        StatusAgendamento.Cancelado => "🚫 Cancelado",
+        StatusAgendamento.Concluido => "🏁 Concluído",
+        _ => status.ToString()
+    };
+
+    private string GetCorStatus(StatusAgendamento status) => status switch
+    {
+        StatusAgendamento.Pendente => "bg-warning text-dark",
+        StatusAgendamento.Confirmado => "bg-success text-white",
+        StatusAgendamento.Recusado => "bg-danger text-white",
+        StatusAgendamento.Cancelado => "bg-secondary text-white",
+        StatusAgendamento.Concluido => "bg-info text-dark",
+        _ => "bg-light text-dark"
+    };
+}
