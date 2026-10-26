@@ -36,6 +36,7 @@ public static class InfrastructureServices
 
         // Email
         services.AddTransient<IEmailSender<ApplicationUser>, SmtpEmailSender>();
+        services.AddTransient<IAgendamentoNotificationService, SmtpAgendamentoNotificationService>();
 
         return services;
     }
