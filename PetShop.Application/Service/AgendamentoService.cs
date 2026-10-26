@@ -1,17 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PetShop.Application.Interfaces;
 using PetShop.Domain.Entities;
 using PetShop.Domain.Enums;
 using PetShop.Infrastructure.Persistence;
+using PetShop.Infrastructure.Services;
 
 namespace PetShop.Application.Services;
 
 public class AgendamentoService : IAgendamentoService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IAgendamentoNotificationService _notificationService;
+    private readonly IAgendaService _agendaService;
+    private readonly ILogger<AgendamentoService> _logger;
 
-    public AgendamentoService(ApplicationDbContext context)
-        => _context = context;
+    public AgendamentoService(
+        ApplicationDbContext context,
+        IAgendamentoNotificationService notificationService,
+        IAgendaService agendaService,
+        ILogger<AgendamentoService> logger)
+    {
+        _context = context;
+        _notificationService = notificationService;
+        _agendaService = agendaService;
+        _logger = logger;
+    }
 
     // ── Cliente ──────────────────────────────────────────────────────────────
 
@@ -25,23 +39,40 @@ public class AgendamentoService : IAgendamentoService
 
     public async Task<bool> SolicitarAgendamentoAsync(Agendamento agendamento)
     {
-        var petValido = await _context.Pets.AnyAsync(p =>
+        var pet = await _context.Pets.FirstOrDefaultAsync(p =>
             p.Id == agendamento.PetId &&
             p.ApplicationUserId == agendamento.ApplicationUserId &&
             p.Ativo);
-        if (!petValido) return false;
+        if (pet is null) return false;
 
-        var servicoValido = await _context.Servicos.AnyAsync(s =>
+        var servico = await _context.Servicos.FirstOrDefaultAsync(s =>
             s.Id == agendamento.ServicoId && s.Ativo);
-        if (!servicoValido) return false;
+        if (servico is null) return false;
 
-        var dataHora = agendamento.DataSolicitada.Date + agendamento.HorarioSolicitado.ToTimeSpan();
-        if (dataHora <= DateTime.Now) return false;
+        var disponivel = await _agendaService.EstaDisponivelAsync(agendamento.DataSolicitada, agendamento.HorarioSolicitado);
+        if (!disponivel) return false;
 
         agendamento.Status = StatusAgendamento.Pendente;
         agendamento.DataCriacao = DateTime.UtcNow;
         _context.Agendamentos.Add(agendamento);
-        return await _context.SaveChangesAsync() > 0;
+        var salvo = await _context.SaveChangesAsync() > 0;
+        if (!salvo) return false;
+
+        agendamento.Pet = pet;
+        agendamento.Servico = servico;
+
+        var cliente = await _context.Users.FindAsync(agendamento.ApplicationUserId);
+        try
+        {
+            await _notificationService.NotificarNovoAgendamentoAsync(
+                agendamento, cliente?.NomeCompleto ?? "Cliente", cliente?.Email ?? string.Empty);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Falha ao enviar e-mail de notificação do agendamento {AgendamentoId}", agendamento.Id);
+        }
+
+        return true;
     }
 
     public async Task<bool> CancelarAsync(int id, string userId)
