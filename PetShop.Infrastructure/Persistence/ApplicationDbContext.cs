@@ -15,6 +15,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Servico> Servicos => Set<Servico>();
     public DbSet<ServicoPreco> ServicoPrecos => Set<ServicoPreco>();
     public DbSet<Agendamento> Agendamentos => Set<Agendamento>();
+    public DbSet<HorarioFuncionamento> HorariosFuncionamento => Set<HorarioFuncionamento>();
+    public DbSet<BloqueioAgenda> BloqueiosAgenda => Set<BloqueioAgenda>();
+    public DbSet<ConfiguracaoAgenda> ConfiguracoesAgenda => Set<ConfiguracaoAgenda>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
