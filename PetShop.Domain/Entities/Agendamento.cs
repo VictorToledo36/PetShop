@@ -15,4 +15,5 @@ public class Agendamento : EntidadeBase
     public DateTime? DataResposta { get; set; }      
     public Pet Pet { get; set; } = null!;
     public Servico Servico { get; set; } = null!;
+    public ICollection<MensagemAgendamento> Mensagens { get; set; } = new List<MensagemAgendamento>();
 }

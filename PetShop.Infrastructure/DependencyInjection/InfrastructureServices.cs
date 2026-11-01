@@ -17,8 +17,16 @@ public static class InfrastructureServices
         var connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string not found.");
 
-        services.AddDbContext<ApplicationDbContext>(options =>
+        // Fábrica (singleton) para código acionado por timer/polling fora do fluxo normal
+        // de requisição, que não pode compartilhar o DbContext com escopo no circuito —
+        // ver MensagemAgendamentoService. O DbContext "normal" com escopo (usado por todo
+        // o resto do código) é resolvido a partir dessa mesma fábrica logo abaixo, para
+        // não registrar DbContextOptions duas vezes (o que quebra a validação de escopos).
+        services.AddDbContextFactory<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        services.AddScoped(sp =>
+            sp.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
 
         // Identity
         services.AddIdentityCore<ApplicationUser>(options =>
