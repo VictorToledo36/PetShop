@@ -1,7 +1,7 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 
-<PageTitle>Cantinho da Roça - Pet Shop Banho & Tosa</PageTitle>
+<PageTitle>Lupet Shop - Pet Shop Banho & Tosa</PageTitle>
 
 <!-- HERO -->
 <section style="background: linear-gradient(135deg, #6a0dad, #9b30ff); padding-top: 70px; position: relative;"
@@ -31,8 +31,9 @@
                 <!-- Substitua pelo <img> com sua foto real -->
                 <div style="background:rgba(255,255,255,0.12); border-radius:20px; height:320px;
                             display:flex; align-items:center; justify-content:center;
-                            border:1px solid rgba(255,255,255,0.2); font-size:80px;">
-                    <span class="float-icon">🐾</span>
+                            border:1px solid rgba(255,255,255,0.2);">
+                    <img src="Images/logo.png" alt="Lupet Shop"
+                         class="float-icon" style="width:220px; height:220px; border-radius:50%; object-fit:cover; box-shadow:0 12px 32px rgba(0,0,0,0.25);" />
                 </div>
             </div>
         </div>
@@ -178,7 +179,7 @@
 <!-- POR QUE NOS ESCOLHER -->
 <section class="py-5">
     <div class="container py-3 text-center">
-        <h2 class="fw-bold mb-2" style="color:#1a1a2e;">Por que escolher o Cantinho da Roça?</h2>
+        <h2 class="fw-bold mb-2" style="color:#1a1a2e;">Por que escolher o Lupet Shop?</h2>
         <p class="text-muted mb-5">Seu pet merece o melhor cuidado</p>
         <div class="row g-4">
             @for (var i = 0; i < beneficios.Length; i++)
