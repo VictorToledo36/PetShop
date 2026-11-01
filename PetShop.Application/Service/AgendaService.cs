@@ -55,11 +55,12 @@ public class AgendaService : IAgendaService
         => await _context.BloqueiosAgenda
             .Where(b => b.Data.Date >= DateTime.Today)
             .OrderBy(b => b.Data)
+            .ThenBy(b => b.Horario)
             .ToListAsync();
 
-    public async Task<bool> AdicionarBloqueioAsync(DateTime data, string? motivo)
+    public async Task<bool> AdicionarBloqueioAsync(DateTime data, string? motivo, TimeOnly? horario = null)
     {
-        _context.BloqueiosAgenda.Add(new BloqueioAgenda { Data = data.Date, Motivo = motivo });
+        _context.BloqueiosAgenda.Add(new BloqueioAgenda { Data = data.Date, Horario = horario, Motivo = motivo });
         return await _context.SaveChangesAsync() > 0;
     }
 
@@ -103,8 +104,18 @@ public class AgendaService : IAgendaService
         if (dia < DateTime.Today || dia > DateTime.Today.AddDays(config.DiasAntecedenciaMaxima))
             return new List<SlotGrade>();
 
-        var bloqueado = await _context.BloqueiosAgenda.AnyAsync(b => b.Data.Date == dia);
-        if (bloqueado) return new List<SlotGrade>();
+        var bloqueiosDoDia = await _context.BloqueiosAgenda
+            .Where(b => b.Data.Date == dia)
+            .ToListAsync();
+
+        // Bloqueio sem horário = dia inteiro bloqueado.
+        if (bloqueiosDoDia.Any(b => b.Horario is null))
+            return new List<SlotGrade>();
+
+        var horariosBloqueados = bloqueiosDoDia
+            .Where(b => b.Horario is not null)
+            .Select(b => b.Horario!.Value)
+            .ToHashSet();
 
         var horarioFuncionamento = await _context.HorariosFuncionamento
             .FirstOrDefaultAsync(h => h.DiaSemana == dia.DayOfWeek && h.Ativo);
@@ -130,11 +141,13 @@ public class AgendaService : IAgendaService
         {
             Data = dia,
             Horario = h,
-            Status = !ocupadosPorHorario.TryGetValue(h, out var status)
-                ? StatusSlot.Disponivel
-                : status == StatusAgendamento.Pendente
-                    ? StatusSlot.Pendente
-                    : StatusSlot.Ocupado
+            Status = horariosBloqueados.Contains(h)
+                ? StatusSlot.Ocupado
+                : !ocupadosPorHorario.TryGetValue(h, out var status)
+                    ? StatusSlot.Disponivel
+                    : status == StatusAgendamento.Pendente
+                        ? StatusSlot.Pendente
+                        : StatusSlot.Ocupado
         }).ToList();
     }
 

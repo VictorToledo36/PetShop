@@ -11,7 +11,7 @@ public interface IAgendaService
 
     // Bloqueios
     Task<List<BloqueioAgenda>> ObterBloqueiosAsync();
-    Task<bool> AdicionarBloqueioAsync(DateTime data, string? motivo);
+    Task<bool> AdicionarBloqueioAsync(DateTime data, string? motivo, TimeOnly? horario = null);
     Task<bool> RemoverBloqueioAsync(int id);
 
     // Configuração
